@@ -14,11 +14,11 @@
 
 
 function Check-WindowsDefender {
-    $service = Get-Service -Name WinDefend -ErrorAction SilentlyContinue
+    $service = Get-Service -Name WinDefend
     if ($service.Status -eq 'Running') {
-        return "✅ PASS: Windows Defender is running"
+        return "PASS: Windows Defender is running"
     } else {
-        return "❌ FAIL: Windows Defender is not running"
+        return "FAIL: Windows Defender is not running"
     }
 }
 
