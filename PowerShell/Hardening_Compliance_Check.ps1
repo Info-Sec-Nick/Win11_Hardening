@@ -1,7 +1,7 @@
 
 
 ##############################################################
-# TITLE: Windows System Hardening Tool - ISM Aligned         #
+# TITLE: ISM Compliance System Checker                       #
 #                                                            #
 # AUTHOR: Nick Kroepsch                                      #     
 #                                                            #
@@ -46,6 +46,15 @@ function Check-OperatingVersion {
     }
 }
 
+function Check-PowershellLanguage {
+    $langmode = $ExecutionContext.SessionState.LanguageMode
+
+    if ($langmode -eq "ConstrainedLanguage") {
+        return "PASS: Windows is running PowerShell in Constrained Language Mode`nCompliant with ISM Control [ISM-1622] - PowerShell is configured to use Constrained Language Mode"
+    } else {
+        return "FAIL: Windows is running PowerShell incorrectly configured to comply with [ISM-1622]"
+    }
+}
 ## MAIN FUCNTION TO RUN CHECKS ##
 function Main {
     Write-Host "Starting ISM Windows Hardening Checks...`n" -ForegroundColor DarkCyan
@@ -54,6 +63,7 @@ function Main {
     $results += Check-WindowsDefender
     $results += Check-PowerShellVersion
     $results += Check-OperatingVersion
+    $results += Check-PowershellLanguage
 
     $results | ForEach-Object { 
         if ($_ -like "PASS*") {
@@ -71,5 +81,7 @@ function Main {
     $results | Out-File -FilePath ".\hardening_report_$timestamp.txt"
 
     Write-Output "`nResults saved to: hardening_report_$timestamp.txt"
+
+    Read-Host "`nPress ENTER to exit...."
 }
 Main
